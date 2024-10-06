@@ -1,0 +1,14 @@
+.jobCard {
+    background-color: #fff;
+    width: 300px;
+    max-width: 85vw;
+    height: 400px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  

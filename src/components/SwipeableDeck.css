@@ -1,0 +1,19 @@
+.swipeableDeck {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    height: 500px;
+    position: relative;
+  }
+  
+  .swipe {
+    position: absolute;
+  }
+  
+  .endMessage {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+  
