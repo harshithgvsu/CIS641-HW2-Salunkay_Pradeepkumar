@@ -1,7 +1,6 @@
 // src/components/SwipeableDeck.js
-import React, { useState, useEffect } from 'react';
-import TinderCard from 'react-tinder-card';
-import JobCard from './JobCard';
+import React, { useState } from 'react';
+import SwipeableCard from './SwipeableCard';
 import './SwipeableDeck.css';
 
 const SwipeableDeck = ({ jobs }) => {
@@ -9,31 +8,22 @@ const SwipeableDeck = ({ jobs }) => {
   const [likedJobs, setLikedJobs] = useState([]);
   const [dislikedJobs, setDislikedJobs] = useState([]);
 
-  useEffect(() => {
-    if (!jobs || jobs.length === 0) {
-      console.error('No jobs data provided to SwipeableDeck.');
-    }
-  }, [jobs]);
-
-  const swiped = (direction, jobId) => {
-    if (direction === 'right') {
-      setLikedJobs((prev) => [...prev, jobId]);
-      console.log(`Liked job ID: ${jobId}`);
-    } else if (direction === 'left') {
-      setDislikedJobs((prev) => [...prev, jobId]);
-      console.log(`Disliked job ID: ${jobId}`);
-    }
+  const handleSwipeLeft = (jobId) => {
+    setDislikedJobs((prev) => [...prev, jobId]);
+    console.log(`Disliked job ID: ${jobId}`);
     setCurrentJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
   };
 
-  const outOfFrame = (jobTitle) => {
-    console.log(`${jobTitle} left the screen!`);
+  const handleSwipeRight = (jobId) => {
+    setLikedJobs((prev) => [...prev, jobId]);
+    console.log(`Liked job ID: ${jobId}`);
+    setCurrentJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
   };
 
   if (!currentJobs || currentJobs.length === 0) {
     return (
       <div className="endMessage">
-        <h2>No more jobs</h2>
+        <h2><center>No more jobs</center></h2>
         <p>You've reached the end of the job listings.</p>
       </div>
     );
@@ -42,15 +32,12 @@ const SwipeableDeck = ({ jobs }) => {
   return (
     <div className="swipeableDeck">
       {currentJobs.map((job) => (
-        <TinderCard
-          className="swipe"
+        <SwipeableCard
           key={job.id}
-          onSwipe={(dir) => swiped(dir, job.id)}
-          onCardLeftScreen={() => outOfFrame(job.title)}
-          preventSwipe={['up', 'down']}
-        >
-          <JobCard job={job} />
-        </TinderCard>
+          job={job}
+          onSwipeLeft={handleSwipeLeft}
+          onSwipeRight={handleSwipeRight}
+        />
       ))}
     </div>
   );

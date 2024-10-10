@@ -1,19 +1,24 @@
+/* src/components/SwipeableDeck.css */
 .swipeableDeck {
-    display: flex;
-    justify-content: center;
-    margin-top: 50px;
-    height: 500px;
-    position: relative;
-  }
-  
-  .swipe {
-    position: absolute;
-  }
-  
-  .endMessage {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  height: 500px;
+  position: relative;
+}
+
+.swipe {
+  position: absolute;
+  width: 300px;
+  max-width: 85vw;
+  height: 400px;
+  cursor: grab;
+}
+
+.endMessage {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+}
