@@ -1,0 +1,52 @@
+/* .swipeableCard {
+  position: absolute;
+  width: 300px;
+  max-width: 85vw;
+  height: 400px;
+  cursor: grab;
+  user-select: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform, opacity;
+} */
+
+.swipeableCard {
+  position: absolute;
+  width: 300px;
+  max-width: 85vw;
+  height: 400px;
+  cursor: grab;
+  user-select: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform, opacity;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Position for swipe icons */
+.swipeIcon {
+  position: absolute;
+  font-size: 48px;
+  z-index: 10;
+  opacity: 0.8;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tickIcon {
+  color: green;
+  left: 20px;
+}
+
+.crossIcon {
+  color: red;
+  right: 20px;
+}

@@ -1,10 +1,9 @@
-// src/components/JobCard.js
 import React from 'react';
-import './JobCard.css';
+import '../css/JobCard.css';
 
 const JobCard = ({ job }) => {
   if (!job) {
-    return null; // Prevent rendering if job is undefined
+    return null;
   }
 
   return (

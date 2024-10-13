@@ -1,7 +1,7 @@
 // src/components/SwipeableDeck.js
 import React, { useState } from 'react';
 import SwipeableCard from './SwipeableCard';
-import './SwipeableDeck.css';
+import '../css/SwipeableDeck.css';
 
 const SwipeableDeck = ({ jobs }) => {
   const [currentJobs, setCurrentJobs] = useState(jobs || []);
