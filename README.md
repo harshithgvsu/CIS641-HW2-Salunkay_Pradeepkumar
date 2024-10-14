@@ -58,5 +58,6 @@ I am passionate about continuous learning and eager to apply emerging technologi
 
 ---
 
-## 👔 Project Page
-[Swipe and Wipe](https://harshithgvsu.github.io/GVSU-CIS641-Swipe-and-Wipe/)
+## 👔 Project Page 
+[![Swipe and Wipe](https://img.shields.io/badge/-Swipe&Wipe-green?style=flat-square&logo=thumbs-up&logoColor=white)](https://harshithgvsu.github.io/GVSU-CIS641-Swipe-and-Wipe/) 
+[![Portfolio](https://img.shields.io/badge/-Portfolio-blue?style=flat-square&logo=portfolio&logoColor=white)](https://harshithgvsu.github.io/Portfolio/)
