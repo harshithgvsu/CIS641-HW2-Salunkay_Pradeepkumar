@@ -24,7 +24,7 @@ const SwipeableDeck = ({ jobs }) => {
     return (
       <div className="endMessage">
         <h2><center>No more jobs</center></h2>
-        <p>You've reached the end of the job listings.</p>
+        <p><center>You've reached the end of the job listings.</center></p>
       </div>
     );
   }

@@ -1,11 +1,28 @@
-.App {
-  text-align: center;
-  background-color: #f0f2f5;
-  min-height: 100vh;
-}
-
+/* App.css */
 .App-header {
+  position: relative;
   background-color: #282c34;
   padding: 20px;
   color: white;
+  text-align: center;
+}
+
+.profile-icon-button {
+  position: relative;
+  /* top: 20px; */
+  /* right: 20px; */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.profile-icon-button i {
+  font-size: 24px;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.profile-icon-button:hover i {
+  color: #4CAF50; /* Change color on hover */
 }

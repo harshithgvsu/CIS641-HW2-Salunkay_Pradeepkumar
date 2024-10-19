@@ -1,80 +1,84 @@
 import React, { useState } from 'react';
 import '../css/ProfilePage.css';
 
-const ProfilePage = ({ onSubmitProfile }) => {
-  const [jobTitle, setJobTitle] = useState('');
-  const [skills, setSkills] = useState('');
-  const [education, setEducation] = useState('');
-  const [projects, setProjects] = useState('');
-  const [experience, setExperience] = useState('');
+const ProfilePage = ({ onSubmitProfile, onCancel }) => {
+  const [profileData, setProfileData] = useState({
+    JobTitle: '',
+    Skills: '',
+    Education: '',
+    Project:'',
+    Experience:''
+  });
+
+  const handleChange = (e) => {
+    setProfileData({
+      ...profileData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const profileData = {
-      jobTitle,
-      skills,
-      education,
-      projects,
-      experience,
-    };
     onSubmitProfile(profileData);
   };
 
+  const handleCancel = () => {
+    onCancel();
+  };
+
   return (
-    <div className="profilePage">
-      <h2>Enter Your Profile Details</h2>
+    <div className="profile-page">
+      <h2>Edit Profile</h2>
       <form onSubmit={handleSubmit}>
-        <div className="formGroup">
-          <label>Job Title:</label>
+        <label>
+          JobTitle:
           <input
             type="text"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            required
+            name="JobTitle"
+            value={profileData.JobTitle}
+            onChange={handleChange}
           />
-        </div>
-
-        <div className="formGroup">
-          <label>Skills:</label>
+        </label>
+        <label>
+          Skills:
           <input
             type="text"
-            value={skills}
-            onChange={(e) => setSkills(e.target.value)}
-            required
+            name="Skills"
+            value={profileData.Skills}
+            onChange={handleChange}
           />
-        </div>
-
-        <div className="formGroup">
-          <label>Education:</label>
+        </label>
+        <label>
+          Education:
           <input
-            type="text"
-            value={education}
-            onChange={(e) => setEducation(e.target.value)}
-            required
+            type="Education"
+            name="Education"
+            value={profileData.Education}
+            onChange={handleChange}
           />
-        </div>
-
-        <div className="formGroup">
-          <label>Projects:</label>
+        </label>
+         <label>
+          Projects:
           <input
-            type="text"
-            value={projects}
-            onChange={(e) => setProjects(e.target.value)}
-            required
+            type="Projects"
+            name="Projects"
+            value={profileData.Projects}
+            onChange={handleChange}
           />
-        </div>
-
-        <div className="formGroup">
-          <label>Experience:</label>
+        </label>
+        <label>
+          Experience:
           <input
-            type="text"
-            value={experience}
-            onChange={(e) => setExperience(e.target.value)}
-            required
+            type="Experience"
+            name="Experience"
+            value={profileData.Experience}
+            onChange={handleChange}
           />
+        </label>
+        <div className="profile-buttons">
+          <button type="submit" className="submit-button">Submit</button>
+          <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
         </div>
-
-        <button type="submit">Submit</button>
       </form>
     </div>
   );
