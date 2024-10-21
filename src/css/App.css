@@ -1,5 +1,5 @@
 /* App.css */
-.App-header {
+/* .App-header {
   position: relative;
   background-color: #282c34;
   padding: 20px;
@@ -9,12 +9,11 @@
 
 .profile-icon-button {
   position: relative;
-  /* top: 20px; */
-  /* right: 20px; */
+  top: 20px;
+  right: 20px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 20px;
 }
 
 .profile-icon-button i {
@@ -24,5 +23,60 @@
 }
 
 .profile-icon-button:hover i {
-  color: #4CAF50; /* Change color on hover */
+  color: #4CAF50;
+} */
+
+
+.App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #282c34;
+  color: white;
+}
+
+/* Align the text to the left */
+.header-text {
+  flex-grow: 1;
+}
+
+.header-text h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+
+.header-text p {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+/* Container for icons */
+.header-icons {
+  display: flex;
+  align-items: center;
+}
+
+/* Styles for profile and logout buttons */
+.profile-icon-button, .logout-icon-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  margin-left: 15px;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.profile-icon-button:hover, .logout-icon-button:hover {
+  color: #61dafb;
+}
+
+/* Specific margin adjustments for better alignment */
+.profile-icon-button {
+  margin-right: 10px;
+}
+
+.logout-icon-button {
+  margin-left: 10px;
 }
