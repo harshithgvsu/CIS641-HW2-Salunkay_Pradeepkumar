@@ -14,15 +14,48 @@ function App() {
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [error, setError] = useState(null);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
+  // Handle login after user registers or logs in
   const handleLogin = () => {
     setIsLoggedIn(true);
+    console.log('User logged in');
   };
 
+  // Register user
+  const handleRegister = async (username, password) => {
+    try {
+      const response = await axios.post('/api/auth/register', { username, password });
+      // const response = await axios.post('http://localhost:5002/api/auth/register', { username, password });
+
+      console.log('Registration successful:', response.data);
+      handleLogin();
+    } catch (error) {
+        console.error('Error registering user:', error.response ? error.response.data : error.message);
+        console.log('inside catch')
+    }
+  };
+
+  // Update user profile
+  const handleProfileUpdate = async (username, profileData) => {
+    try {
+      const response = await axios.post('/api/user/profile', {
+        username: username,
+        profileData
+      });
+      console.log('Profile updated successfully:', response.data);
+    } catch (error) {
+      console.error('Error updating profile:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  // Save the profile and update state
   const handleProfileSave = (profileData) => {
     console.log('Profile Saved:', profileData);
     setProfileCompleted(true);
     setIsEditingProfile(false);
+    handleProfileUpdate(username, profileData);  // Pass the username here
   };
 
   const handleProfileEdit = () => {
@@ -37,8 +70,10 @@ function App() {
     setIsLoggedIn(false);
     setProfileCompleted(false);
     setIsEditingProfile(false);
+    setUsername('');
   };
 
+  // Fetch jobs from the server when logged in and profile is complete
   useEffect(() => {
     if (isLoggedIn && profileCompleted) {
       const fetchJobs = async () => {
@@ -47,7 +82,7 @@ function App() {
 
           const requestBody = {
             keywords: 'software developer',
-            location: 'remote', 
+            location: 'remote',
           };
 
           const response = await axios.post('http://localhost:5002/api/jobs', requestBody);
@@ -73,27 +108,19 @@ function App() {
         </div>
         {isLoggedIn && (
           <div className="header-icons">
-            <button
-              className="profile-icon-button"
-              onClick={handleProfileEdit}
-            >
+            <button className="profile-icon-button" onClick={handleProfileEdit}>
               <i className="fas fa-user"></i>
             </button>
-            <button
-              className="logout-icon-button"
-              onClick={handleLogout}
-            >
+            <button className="logout-icon-button" onClick={handleLogout}>
               <i className="fas fa-sign-out-alt"></i>
             </button>
           </div>
         )}
       </header>
       <ErrorBoundary>
-        {isLoggedIn ? (isEditingProfile || !profileCompleted ? (
-            <ProfilePage 
-              onSubmitProfile={handleProfileSave}
-              onCancel={handleCancelEdit}
-            />
+        {isLoggedIn ? (
+          isEditingProfile || !profileCompleted ? (
+            <ProfilePage onSubmitProfile={handleProfileSave} onCancel={handleCancelEdit} />
           ) : loadingJobs ? (
             <div>Loading jobs...</div>
           ) : error ? (
@@ -102,7 +129,7 @@ function App() {
             <SwipeableDeck jobs={jobs} />
           )
         ) : (
-          <Login onLogin={handleLogin} />
+          <Login onLogin={handleLogin} onRegister={handleRegister} setUsername={setUsername} setPassword={setPassword} />
         )}
       </ErrorBoundary>
     </div>

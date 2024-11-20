@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
 import '../css/Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, onRegister }) => {
   const [isSignUp, setIsSignUp] = useState(false); // Toggle between login and signup
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState(''); // Only needed for sign-up
+  const [name, setUsername] = useState(''); // Only needed for sign-up
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSignUp) {
-      // Perform signup logic
-      console.log('Sign up with', { name, email, password });
-    } else {
-      // Perform login logic
-      console.log('Log in with', { email, password });
+    
+    try {
+      if (isSignUp) {
+        setUsername(name)
+        setPassword(password)
+        // Call registration function if in sign-up mode
+        await onRegister({ name, email, password });
+        console.log('Sign up with', { name, email, password });
+      } else {
+        setUsername(email)
+        setPassword(password)
+        // Call login function if in login mode
+        await onLogin({ email, password });
+        console.log('Log in with', { email, password });
+      }
+    } catch (err) {
+      setError(err.message);
     }
-    onLogin(); // Call parent function to handle login state
   };
 
   return (
@@ -28,26 +39,34 @@ const Login = ({ onLogin }) => {
             type="text"
             placeholder="Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
         )}
         <input
           type="email"
           placeholder="Email"
-          value='abc@gmail.com'
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
           type="password"
           placeholder="Password"
-          value='123'
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <button type="submit">{isSignUp ? 'Sign Up' : 'Log In'}</button>
       </form>
-      <p onClick={() => setIsSignUp(!isSignUp)}>
+      
+      {/* Show error message if error occurs */}
+      {error && <div className="error">{error}</div>}
+
+      <p onClick={() => {
+        setIsSignUp(!isSignUp);
+        setError(null);
+      }}>
         {isSignUp ? 'Already have an account? Log In' : 'Don’t have an account? Sign Up'}
       </p>
     </div>

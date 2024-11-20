@@ -6,7 +6,7 @@ const ProfilePage = ({ onSubmitProfile, onCancel }) => {
     JobTitle: '',
     Skills: '',
     Education: '',
-    Project:'',
+    Projects:'',
     Experience:''
   });
 
