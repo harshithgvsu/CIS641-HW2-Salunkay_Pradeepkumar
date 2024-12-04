@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import SwipeableDeck from './components/SwipeableDeck';
 import Login from './components/Login';
 import ProfilePage from './components/ProfilePage';
 import ErrorBoundary from './components/ErrorBoundary';
-import axios from 'axios';
 import './css/App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -17,54 +17,80 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // Handle login after user registers or logs in
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    console.log('User logged in');
-  };
-
-  // Register user
-  const handleRegister = async (username, password) => {
+  // Handle user login
+  const handleLogin = async ({ email, password }) => {
     try {
-      const response = await axios.post('/api/auth/register', { username, password });
-      // const response = await axios.post('http://localhost:5002/api/auth/register', { username, password });
-
-      console.log('Registration successful:', response.data);
-      handleLogin();
-    } catch (error) {
-        console.error('Error registering user:', error.response ? error.response.data : error.message);
-        console.log('inside catch')
-    }
-  };
-
-  // Update user profile
-  const handleProfileUpdate = async (username, profileData) => {
-    try {
-      const response = await axios.post('/api/user/profile', {
-        username: username,
-        profileData
+      const response = await axios.post('http://localhost:5002/api/auth/login', {
+        username: email,
+        password,
       });
-      console.log('Profile updated successfully:', response.data);
-    } catch (error) {
-      console.error('Error updating profile:', error.response ? error.response.data : error.message);
+      // console.log('Login successful:', response.data);
+      setUsername(email);
+      setIsLoggedIn(true);
+    } catch (err) {
+      console.error('Error during login:', err.response?.data || err.message);
     }
   };
 
-  // Save the profile and update state
+  // Handle user registration
+  const handleRegister = async ({ name, email, password }) => {
+    try {
+      const response = await axios.post('http://localhost:5002/api/auth/register', {
+        username: name,
+        email,
+        password,
+      });
+      // console.log('Registration successful:', response.data);
+      setUsername(name);
+      setIsLoggedIn(true);
+    } catch (err) {
+      console.error('Error during registration:', err.response?.data || err.message);
+    }
+  };
+
+  // Fetch jobs after login and profile completion
+  useEffect(() => {
+    if (isLoggedIn && profileCompleted) {
+      const fetchJobs = async () => {
+        try {
+          setLoadingJobs(true);
+          const requestBody = { keywords: 'software developer', location: 'remote' };
+          const response = await axios.post('http://localhost:5002/api/jobs', requestBody);
+          setJobs(response.data);
+        } catch (err) {
+          console.error('Error fetching jobs:', err.message);
+          setError('Failed to load jobs');
+        } finally {
+          setLoadingJobs(false);
+        }
+      };
+      fetchJobs();
+    }
+  }, [isLoggedIn, profileCompleted]);
+
+  // Handle profile save
   const handleProfileSave = (profileData) => {
-    console.log('Profile Saved:', profileData);
+    console.log('Profile saved:', profileData);
     setProfileCompleted(true);
     setIsEditingProfile(false);
-    handleProfileUpdate(username, profileData);  // Pass the username here
+    handleProfileUpdate(username, profileData);
   };
 
-  const handleProfileEdit = () => {
-    setIsEditingProfile(true);
+  // Handle profile update
+  const handleProfileUpdate = async (username, profileData) => {
+    try {
+      const response = await axios.put('http://localhost:5002/api/user/profile', {
+        username,
+        profileData,
+      });
+      // console.log('Profile updated successfully:', response.data);
+    } catch (err) {
+      console.error('Error updating profile:', err.response?.data || err.message);
+    }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditingProfile(false);
-  };
+  const handleProfileEdit = () => setIsEditingProfile(true);
+  const handleCancelEdit = () => setIsEditingProfile(false);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -72,32 +98,6 @@ function App() {
     setIsEditingProfile(false);
     setUsername('');
   };
-
-  // Fetch jobs from the server when logged in and profile is complete
-  useEffect(() => {
-    if (isLoggedIn && profileCompleted) {
-      const fetchJobs = async () => {
-        try {
-          setLoadingJobs(true);
-
-          const requestBody = {
-            keywords: 'software developer',
-            location: 'remote',
-          };
-
-          const response = await axios.post('http://localhost:5002/api/jobs', requestBody);
-          setJobs(response.data);
-          setLoadingJobs(false);
-        } catch (error) {
-          console.error('Error fetching jobs:', error);
-          setError('Failed to load jobs');
-          setLoadingJobs(false);
-        }
-      };
-
-      fetchJobs();
-    }
-  }, [isLoggedIn, profileCompleted]);
 
   return (
     <div className="App">
@@ -120,7 +120,10 @@ function App() {
       <ErrorBoundary>
         {isLoggedIn ? (
           isEditingProfile || !profileCompleted ? (
-            <ProfilePage onSubmitProfile={handleProfileSave} onCancel={handleCancelEdit} />
+            <ProfilePage
+              onSubmitProfile={handleProfileSave}
+              onCancel={handleCancelEdit}
+            />
           ) : loadingJobs ? (
             <div>Loading jobs...</div>
           ) : error ? (
@@ -129,7 +132,12 @@ function App() {
             <SwipeableDeck jobs={jobs} />
           )
         ) : (
-          <Login onLogin={handleLogin} onRegister={handleRegister} setUsername={setUsername} setPassword={setPassword} />
+          <Login
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+            setUsername={setUsername}
+            setPassword={setPassword}
+          />
         )}
       </ErrorBoundary>
     </div>

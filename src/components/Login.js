@@ -2,28 +2,22 @@ import React, { useState } from 'react';
 import '../css/Login.css';
 
 const Login = ({ onLogin, onRegister }) => {
-  const [isSignUp, setIsSignUp] = useState(false); // Toggle between login and signup
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setUsername] = useState(''); // Only needed for sign-up
+  const [name, setName] = useState('');
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       if (isSignUp) {
-        setUsername(name)
-        setPassword(password)
-        // Call registration function if in sign-up mode
+        // console.log('Signing up with:', { name, email, password });
         await onRegister({ name, email, password });
-        console.log('Sign up with', { name, email, password });
       } else {
-        setUsername(email)
-        setPassword(password)
-        // Call login function if in login mode
+        // console.log('Logging in with:', { email, password });
         await onLogin({ email, password });
-        console.log('Log in with', { email, password });
       }
     } catch (err) {
       setError(err.message);
@@ -39,7 +33,7 @@ const Login = ({ onLogin, onRegister }) => {
             type="text"
             placeholder="Name"
             value={name}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             required
           />
         )}
@@ -59,14 +53,16 @@ const Login = ({ onLogin, onRegister }) => {
         />
         <button type="submit">{isSignUp ? 'Sign Up' : 'Log In'}</button>
       </form>
-      
-      {/* Show error message if error occurs */}
+
+      {/* Show error message if there's an error */}
       {error && <div className="error">{error}</div>}
 
-      <p onClick={() => {
-        setIsSignUp(!isSignUp);
-        setError(null);
-      }}>
+      <p
+        onClick={() => {
+          setIsSignUp(!isSignUp);
+          setError(null);
+        }}
+      >
         {isSignUp ? 'Already have an account? Log In' : 'Don’t have an account? Sign Up'}
       </p>
     </div>

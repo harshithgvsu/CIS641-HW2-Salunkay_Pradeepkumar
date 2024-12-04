@@ -5,13 +5,13 @@ const User = require('../models/user');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
   console.log('req.body route',req.body)
   console.log('req, res', req, res)
   try {
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'User with this email already exists' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -19,6 +19,7 @@ router.post('/register', async (req, res) => {
 
     const newUser = new User({
       username,
+      email,
       password: hashedPassword
     });
 
@@ -33,9 +34,9 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
   try {
-    const user = await User.findOne({ username });
+    stringJSON = JSON.stringify(req.body);
+    const user = await User.findOne({ $or: [{ username }, { email: username }] });
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }

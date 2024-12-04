@@ -19,6 +19,7 @@ const ProfilePage = ({ onSubmitProfile, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // console.log('Submitting Profile:', profileData)
     onSubmitProfile(profileData);
   };
 
