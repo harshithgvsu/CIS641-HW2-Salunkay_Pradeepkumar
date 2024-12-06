@@ -13,10 +13,8 @@ const Login = ({ onLogin, onRegister }) => {
 
     try {
       if (isSignUp) {
-        // console.log('Signing up with:', { name, email, password });
         await onRegister({ name, email, password });
       } else {
-        // console.log('Logging in with:', { email, password });
         await onLogin({ email, password });
       }
     } catch (err) {

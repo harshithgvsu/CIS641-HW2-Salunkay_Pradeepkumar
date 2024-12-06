@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const nodemailer = require('nodemailer')
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const User = require('./models/user')
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5002;
@@ -44,14 +45,33 @@ app.post('/api/jobs', async (req, res) => {
 
 app.post('/api/generate-resume', async (req, res) => {
   const { job, email } = req.body;
-  console.log('Received Job data:', job)
   try {
+    const user = await User.findOne({ email }); // Ensure `email` is unique in your schema
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const profileData = user.profile || {};
+
+    const prompt = `
+      Generate a professional resume tailored for the following job:
+      Job Title: ${job.title}
+      Company: ${job.company}
+      Location: ${job.location}
+      Description: ${job.description}
+
+      Include the following user details:
+      Name: ${user.userName}
+      Email: ${user.email}
+      Skills: ${profileData.Skills || 'Not provided'}
+      Experience: ${profileData.Experience || 'Not provided'}
+      Education: ${profileData.Education || 'Not provided'}
+    `;
     const openAIResponse = await axios.post('https://api.openai.com/v1/chat/completions',
       {
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a professional resume generator.' },
-          { role: 'user', content: `Generate an ATS resume for this job description: \n${JSON.stringify(job)}` },
+          { role: 'user', content: prompt },
         ],
         max_tokens: 1500,
       },
@@ -62,25 +82,25 @@ app.post('/api/generate-resume', async (req, res) => {
         },
       }
     );
-    console.log('OpenAI Response:', openAIResponse.data);
+    // console.log('OpenAI Response:', openAIResponse.data);
     const generatedResume = openAIResponse.data.choices[0].message.content
-    if (email) {
-      const transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: process.env.EMAIL_USER || 'salunkah@mail.gvsu.edu',
-          pass: process.env.EMAIL_PASS || 'Qwertasdfzxcv@123',
-        }
-      });
-      const mailOptions = {
-        from: '"Job Application" <salunkah@mail.gvsu.edu>',
-        to: email,
-        subject: 'Thank you for Applying!',
-        text: `Dear Applicant,\n\nThank you for applying for the position of ${job.title} at ${job.company}. We have received your application and will get back to you shortly.\n\nBest regards,\n[Harshith]`,
-      };
-      await transporter.sendMail(mailOptions);
-      console.log('email sent successfully');
-    }
+    // if (email) {
+    //   const transporter = nodemailer.createTransport({
+    //     service: 'Gmail',
+    //     auth: {
+    //       user: process.env.EMAIL_USER || 'vikingadam23@gmail.com',
+    //       pass: process.env.EMAIL_PASS || 'Viking@Csu',
+    //     }
+    //   });
+    //   const mailOptions = {
+    //     from: '"Job Application" <salunkah@mail.gvsu.edu>',
+    //     to: email,
+    //     subject: 'Thank you for Applying!',
+    //     text: `Dear ${user.userName},\n\nThank you for applying for the position of ${job.title} at ${job.company}. We have received your application and will get back to you shortly.\n\nBest regards,\n[Harshith]`,
+    //   };
+    //   await transporter.sendMail(mailOptions);
+    //   console.log('email sent successfully');
+    // }
     res.status(200).json({ resume: generatedResume, message: 'Resume generated and email sent.' });
   } catch (err) {
     console.error('Error generating resume:', err.message);

@@ -6,8 +6,9 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
-  console.log('req.body route',req.body)
-  console.log('req, res', req, res)
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {

@@ -24,15 +24,13 @@ function App() {
         username: email,
         password,
       });
-      // console.log('Login successful:', response.data);
-      setUsername(email);
+      setUsername(response.data.username || email);
       setIsLoggedIn(true);
     } catch (err) {
       console.error('Error during login:', err.response?.data || err.message);
     }
   };
 
-  // Handle user registration
   const handleRegister = async ({ name, email, password }) => {
     try {
       const response = await axios.post('http://localhost:5002/api/auth/register', {
@@ -40,8 +38,7 @@ function App() {
         email,
         password,
       });
-      // console.log('Registration successful:', response.data);
-      setUsername(name);
+      setUsername(response.data.username || email);
       setIsLoggedIn(true);
     } catch (err) {
       console.error('Error during registration:', err.response?.data || err.message);
@@ -68,9 +65,11 @@ function App() {
     }
   }, [isLoggedIn, profileCompleted]);
 
-  // Handle profile save
   const handleProfileSave = (profileData) => {
-    console.log('Profile saved:', profileData);
+    if (!profileData || Object.values(profileData).some((val) => !val)) {
+      console.error('Incomplete profile data:', profileData);
+      return;
+    }
     setProfileCompleted(true);
     setIsEditingProfile(false);
     handleProfileUpdate(username, profileData);
@@ -83,7 +82,6 @@ function App() {
         username,
         profileData,
       });
-      // console.log('Profile updated successfully:', response.data);
     } catch (err) {
       console.error('Error updating profile:', err.response?.data || err.message);
     }
@@ -129,7 +127,7 @@ function App() {
           ) : error ? (
             <div>{error}</div>
           ) : (
-            <SwipeableDeck jobs={jobs} />
+            <SwipeableDeck jobs={jobs} userEmail={username} />
           )
         ) : (
           <Login
