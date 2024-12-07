@@ -1,4 +1,4 @@
-# Job-board-react
+# Swipe and Wipe
 
 # CIS641-HW2 - Harshith Salunkay Pradeepkumar
 
